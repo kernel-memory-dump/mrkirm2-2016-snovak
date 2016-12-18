@@ -1,0 +1,1 @@
+print ("SPAM SPAM SPAM and eggs?")

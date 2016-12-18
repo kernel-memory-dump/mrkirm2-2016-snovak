@@ -1,0 +1,52 @@
+Existing instances states:
+
+Instance description:
+
+Instance id:i-0cba55be07a416bed
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
+Instance description:
+
+Instance id:i-01ea573ec2e13d0f0
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
+Instance description:
+
+Instance id:i-0388a6c15f81d9d48
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
+Instance description:
+
+Instance id:i-0be9adc13989c317e
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
+Instance description:
+
+Instance id:i-0a548a1d23cd1ee92
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
+Instance description:
+
+Instance id:i-06eaf3d04d748fa86
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:stopped
+Instance private: 172.31.60.33
+=================
+Instance description:
+
+Instance id:i-06eaf3d04d748fa86
+Image id:ami-b73b63a0
+Instance type:t2.micro
+Instance state:terminated
+=================
