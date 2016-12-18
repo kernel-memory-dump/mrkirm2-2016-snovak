@@ -1,6 +1,6 @@
 # mrkirm2-2016-snovak
 
-Amazon Web Services DEMO 
+Amazon Web Services boto3 DEMO 
 
 EC2, S3, SQS
 
