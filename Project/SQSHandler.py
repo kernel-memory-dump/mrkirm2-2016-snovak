@@ -81,10 +81,10 @@ class SQSMessage:
             return int(self.original_message.message_attributes.get(key).get('StringValue'))
 
         def set_id(self, value):
-            self.set_number_attribute(SQS_MESSAGE_ID_ATTRIBUTE, value)
+            self.set_string_attribute(SQS_MESSAGE_ID_ATTRIBUTE, value)
 
         def get_id(self):
-            return self.get_number_attribute(SQS_MESSAGE_ID_ATTRIBUTE)
+            return self.get_string_attribute(SQS_MESSAGE_ID_ATTRIBUTE)
 
         def set_total_number(self, value):
             self.set_number_attribute(SQS_MESSAGE_TOTAL_COUNT, value)

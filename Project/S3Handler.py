@@ -53,6 +53,18 @@ class S3Handler(object):
         if bucket_name is not None:
             self.bucket = self.s3_resource.Bucket(bucket_name)
 
+    def create_new_public_bucket(self):
+        """
+        "Statement": [{
+            "Sid": "AllowPublicRead",
+            "Effect": "Allow",
+            "Principal": {"AWS": "*"},
+            "Action": ["s3:GetObject"],
+            "Resource": ["arn:aws:s3:::bucket/*"]
+        }
+        """
+        pass
+
     def create_new_bucket(self):
         # acquire a new bucket name if no bucket name was specified
         if self.bucket_name is None:
