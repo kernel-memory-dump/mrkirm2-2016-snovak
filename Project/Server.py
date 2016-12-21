@@ -54,13 +54,15 @@ def process_request(sqs_message):
     write_to_log("Received message from client:")
     # process file
     request_msg = ServerRequestMessage(msg_body)
-
+    
+    output_file_url = client_id + "___output.json"
+    output_bucket_handler.upload_file('log.txt', output_file_url)
 
     # create response output
     sqs_response_msg = SQSMessage()
     sqs_response_msg.set_id(client_id)
     response_msg = ServerResponseMessage()
-    response_msg.set_output_file_url("lel")
+    response_msg.set_output_file_url(output_file_url)
     #############################################
     sqs_response_msg.set_message_body(response_msg.as_json_str())
     # upload response to output bucket under client_id_output_file_timestamp key
