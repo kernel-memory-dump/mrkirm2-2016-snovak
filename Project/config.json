@@ -1,7 +1,7 @@
 {
-  "status": "running",
-  "request_queue_name": "snovak.project.request.queue-1",
-  "response_queue_name": "snovak.project.response.queue-1",
+  "status" : "running",
+  "request_queue_name": "snovak-project-request-queue-1",
+  "response_queue_name": "snovak-project-response-queue-1",
   "input_bucket_name": "snovak.project.bucket.input.snovak.1",
   "output_bucket_name": "snovak.project.bucket.output.snovak.1"
 }

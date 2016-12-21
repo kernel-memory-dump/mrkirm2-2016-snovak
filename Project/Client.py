@@ -43,8 +43,7 @@ def write_to_log(line):
     log_file.write(time_part + ":" + line)
     log_file.close()
 
-CONFIG_JSON_BUCKET = "snovak.project.bucket"
-CONFIG_JSON_KEY = "config.json"
+
 
 def generate_client_id():
     """ Generates a client id with prefix snovak.client.'
@@ -61,11 +60,6 @@ def generate_client_id():
 
 def main():
 
-    # inform user of proper usage if input arguments are invalid
-    if len(sys.argv) != 1:
-        print("Error, invalid usage, examples of valid usage:\n\tpython Client.py consumer my-queue\n\tpython Client.py producer my-queue")
-        sys.exit(1)
-        return
     # Parse input arguments
 
     input_file = "test-file.txt"
@@ -88,12 +82,12 @@ def main():
     sqs_request_msg.set_id(client_id)
     ################################################
     request_msg = ServerRequestMessage()
-    request_msg.set_input_file_url()
+    request_msg.set_input_file_url("my-awesome-url")
     sqs_request_msg.set_message_body(request_msg.as_json_str())
     ###############################################
 
     # send request to server to process uploaded file
-    sqs_request_handle.send_message(request_msg)
+    sqs_request_handle.send_message(sqs_request_msg)
 
     sqs_response_handle = SQSHandler(config.get_response_queue_name())
 

@@ -29,6 +29,9 @@ from pprint import pprint
 from S3Handler import S3Handler
 
 
+CONFIG_JSON_BUCKET = "snovak.project.bucket"
+CONFIG_JSON_KEY = "config.json"
+
 def acquire_config():
     config_bucket_handler = S3Handler(CONFIG_JSON_BUCKET)
     config_bucket_handler.download_file(CONFIG_JSON_KEY, "config.json")
