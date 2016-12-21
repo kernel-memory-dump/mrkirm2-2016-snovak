@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #############################################################################
 #
 #
@@ -35,15 +37,7 @@ from ServerResponseMessage import ServerResponseMessage
 
 from Config import *
 from Config import Config
-
-def write_to_log(line):
-    log_file = open("log.txt", "a")
-    from datetime import datetime
-    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    log_file.write(time_part + ":" + line)
-    log_file.close()
-
-
+from log import * 
 
 def generate_client_id():
     """ Generates a client id with prefix snovak.client.'
@@ -71,10 +65,12 @@ def main():
     # generate client id
     client_id = generate_client_id()
 
+    file_url =  client_id + "__" + input_file
+
     # place input file inside input bucket
     s3_input_handle = S3Handler(config.get_input_bucket_name())
     # place file under key client-id+__nput_file_name
-    s3_input_handle.upload_file(input_file, client_id + "__" + "input_file")
+    s3_input_handle.upload_file(input_file, file_url)
 
     # send command to request queue
     sqs_request_handle = SQSHandler(config.get_request_queue_name())
@@ -82,7 +78,7 @@ def main():
     sqs_request_msg.set_id(client_id)
     ################################################
     request_msg = ServerRequestMessage()
-    request_msg.set_input_file_url("my-awesome-url")
+    request_msg.set_input_file_url(file_url)
     sqs_request_msg.set_message_body(request_msg.as_json_str())
     ###############################################
 
@@ -91,14 +87,22 @@ def main():
 
     sqs_response_handle = SQSHandler(config.get_response_queue_name())
 
+    s3_output_handle = S3Handler(config.get_output_bucket_name())
 
     # wait until response queue contains message with id set to client-id
     while True:
         sqs_response_handle.receive_messages()
         sqs_messages = sqs_response_handle.get_inbox().get_messages()
+        sqs_response_handle.get_inbox().clear()
+  
         for sqs_message in sqs_messages:
-            if sqs_messages.get_id() is not None and sqs_message.get_id() is client_id:
-                print("Received response from server!")
+            #print(str(sqs_message.get_message_body))
+            if sqs_message.get_id() != None and sqs_message.get_id() == client_id:
+                print("Received my  response from server!")
+                sqs_message.delete()
+                # parse into object 
+                response_msg = ServerResponseMessage(sqs_message.get_message_body())
+                s3_output_handle.download_file(response_msg.get_output_file_url(), "from_server_" + response_msg.get_output_file_url())
                 write_to_log("Received response from server!")
                 break
 

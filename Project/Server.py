@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #############################################################################
 #
 #
@@ -34,23 +36,14 @@ from Config import *
 from ServerRequestMessage import ServerRequestMessage
 from ServerResponseMessage import ServerResponseMessage
 import json
+from log import * 
 
-
-
-CONFIG_FILE_URL = "https://s3-us-west-2.amazonaws.com/snovak.project.bucket/config.json"
 config = None
 
-def write_to_log(line):
-    log_file = open("log.txt", "a")
-    from datetime import datetime
-    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    log_file.write(time_part + ":" + line)
-    log_file.close()
-
-def process_request(self, sqs_message):
+def process_request(sqs_message):
     global config
     # extract/parse input JSON
-    msg_body = sqs_message.body
+    msg_body = sqs_message.get_message_body()
     client_id = sqs_message.get_id()
     server_request_message = ServerRequestMessage(msg_body)
 
@@ -85,6 +78,7 @@ def process_request(self, sqs_message):
 
 def main():
 
+    global config
     # load config
     config = acquire_config()
 

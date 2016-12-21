@@ -33,8 +33,8 @@ class ServerRequestMessage:
         if json_data is not None:
             self.__parse_json_data(json_data)
 
-    def __parse_json_data(self):
-        parsed = json.load(data)
+    def __parse_json_data(self, data):
+        parsed = json.loads(data)
         self.__input_file_url = parsed["input_file_url"]
 
     def set_input_file_url(self, url):

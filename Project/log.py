@@ -24,27 +24,9 @@
 #
 #############################################################################
 
-import json
-
-class ServerResponseMessage:
-
-    def __init__(self, json_data=None):
-        self.__output_file_url = None
-        if json_data is not None:
-            self.__parse_json_data(json_data)
-
-    def __parse_json_data(self, data):
-       parsed = json.loads(data)
-       self.__output_file_url = parsed["output_file_url"]
-
-    def set_output_file_url(self, url):
-        self.__output_file_url = url
-
-    def get_output_file_url(self):
-        return self.__output_file_url
-
-    def as_json_str(self):
-        return json.dumps({"output_file_url":self.__output_file_url})
-
-    def as_str(self):
-        return "output_file:" + str(self.__output_file_url)
+def write_to_log(line):
+    log_file = open("log.txt", "a")
+    from datetime import datetime
+    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_file.write(time_part + ":" + line + "\n")
+    log_file.close()
