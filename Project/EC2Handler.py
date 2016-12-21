@@ -84,23 +84,36 @@ class EC2Handler:
 
         return object.__getattribute__(self, name)
 
-    def create_instance(self):
+    def __load_init_script_as_string(self, path_to_init_script):
+        try:
+            bash_script = open(path_to_init_script, "r")
+            script_content = bash_script.read()
+            return script_content
+        except:
+            print("Failed to load")
+            return ""
+
+    def create_instance(self, path_to_init_script=None):
         """Create a new EC2 instance, using default type
 
         """
+        init_user_data = ""
+        if path_to_init_script is not None:
+            init_user_data = self.__load_init_script_as_string(path_to_init_script)
+
         created_instances = self.ec2.create_instances(
                         ImageId = IMAGE_ID,
                         MinCount = 1,
                         MaxCount = 1,
                         KeyName = DEFAULT_KEYNAME,
                         SecurityGroups = [DEFAULT_SECURITY_GROUP],
-                        InstanceType = DEFAULT_INSTANCE_TYPE)
-
-        self.instance_id = created_instances[0].id
-        self.ec2_instance = created_instances[0]
+                        InstanceType = DEFAULT_INSTANCE_TYPE,
+                        UserData=init_user_data)
 
         # wait until instance is READY, state will be pending!
         try:
+            self.instance_id = created_instances[0].id
+            self.ec2_instance = created_instances[0]
             self.ec2_instance.wait_until_running()
         except:
             print("Instance did not start, create_instance failed!")
@@ -122,6 +135,7 @@ class EC2Handler:
         if self.ec2_instance == None:
             print ("Error, cannot start, EC2Handler assigned instance is None!")
             raise EC2HandlerError("Error, cannot start, EC2Handler assigned instance is None!")
+
         self.ec2_instance.start()
         self.ec2_instance.wait_until_running()
     

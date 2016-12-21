@@ -28,16 +28,23 @@
 import threading
 from SQSHandler import SQSHandler
 from SQSHandler import SQSMessage
+from S3Handler import S3Handler
 from Config import Config
+from ServerRequestMessage import ServerRequestMessage
+import json
 
 config = None
 
 def process_request(self, sqs_message):
     global config
-    sqs_request_handle = SQSHandler(config.get_response_queue_name(), 5)
     # extract/parse input JSON
+    msg_body = sqs_message.body
+    client_id = sqs_message.get_id()
+    server_request_message = ServerRequestMessage(msg_body)
 
     # pull input file via S3
+    input_bucket_handler = S3Handler(config.get_input_bucket_name())
+    output_bucket_handler = S3Handler(config.get_output_bucket_name())
 
     # process file
 

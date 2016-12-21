@@ -24,21 +24,19 @@
 #
 #############################################################################
 
-import json
+from EC2Handler import EC2Handler
 
-class ServerResponseMessage:
+INIT_SCRIPT = "ec2_init_template.sh"
 
-    def __init__(self, data=None):
-        pass
+def main():
+    print("Firing up EC2 server instance...")
+    handler = EC2Handler()
 
-    def get_output_file_url(self):
-        pass
+    handler.create_instance(INIT_SCRIPT)
+    if handler.ec2_instance is None:
+        print("Fatal error: failed to create EC2 instance!")
+        return
 
-    def __parse_json_data(self, data):
-        parsed = json.load(data)
 
-    def as_json_str(self):
-        pass
-
-    def as_str(self):
-        pass
+if __name__ == '__main__':
+    main()

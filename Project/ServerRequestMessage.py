@@ -24,3 +24,22 @@
 #
 #############################################################################
 
+import json
+
+class ServerRequestMessage:
+
+    def __init__(self, data=None):
+        if data is not None:
+            self.__parse_json_data(data)
+
+    def get_input_file_url(self):
+        pass
+
+    def __parse_json_data(self, data):
+        parsed = json.load(data)
+
+    def as_json_str(self):
+        pass
+
+    def as_str(self):
+        pass
