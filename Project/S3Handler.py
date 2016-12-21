@@ -25,7 +25,28 @@
  #############################################################################
 import boto3
 
-def get_random_prefix():
+
+POLICY_TEMPLATE = """{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::{BUCKET_NAME}"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": ["arn:aws:s3:::{BUCKET_NAME}/*"]
+    }
+  ]
+}"""
+
+def get_random_prefix(is_public=False):
     """ Generates a new random bucket name with a prefix 'snovak.'
 
     Args:
@@ -36,7 +57,10 @@ def get_random_prefix():
     """
 
     from time import time
-    return "snovak." + str(time())
+    if is_public:
+        return "public.snovak.2016." + str(time())
+    else:
+        return "snovak." + str(time())
    
 
 ########## ERRORS #################################################
@@ -54,16 +78,14 @@ class S3Handler(object):
             self.bucket = self.s3_resource.Bucket(bucket_name)
 
     def create_new_public_bucket(self):
-        """
-        "Statement": [{
-            "Sid": "AllowPublicRead",
-            "Effect": "Allow",
-            "Principal": {"AWS": "*"},
-            "Action": ["s3:GetObject"],
-            "Resource": ["arn:aws:s3:::bucket/*"]
-        }
-        """
-        pass
+        # acquire a new bucket name if no bucket name was specified
+        if self.bucket_name is None:
+            self.bucket_name = get_random_prefix(is_public=True)
+        policy = POLICY_TEMPLATE.replace("{BUCKET_NAME}", self.bucket_name)    
+        bucket_policy = self.s3_resource.BucketPolicy(self.bucket_name)
+        bucket_policy.policy = policy
+        self.bucket =  bucket_policy.Bucket()
+        
 
     def create_new_bucket(self):
         # acquire a new bucket name if no bucket name was specified
@@ -114,3 +136,10 @@ class S3Handler(object):
 
     def get_bucket_name(self):
         return self.bucket_name
+
+
+
+if __name__ == '__main__':
+    handler = S3Handler("bestnssnovakname.rtrk.bbt.2016.23.4123123213xxxxx2x")
+    handler.create_new_public_bucket()
+    handler.upload_file("log.txt", "log.txt")

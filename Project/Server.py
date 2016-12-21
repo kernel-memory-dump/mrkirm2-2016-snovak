@@ -40,6 +40,26 @@ from log import *
 
 config = None
 
+def generate_temp_file_name():
+    """ Generates a client id with prefix snovak.client.'
+
+    Args:
+        None
+    Returns:
+        (str) - newly generated client id
+
+    """
+
+    from time import time
+    return "output_file.server." + str(time())
+
+
+def fetch_input_file(request_msg):
+    input_bucket_handler = S3Handler(request_msg.get_input_file_bucket_name())
+    input_bucket_handler.download_file(request_msg.get_input_file_bucket_key(), generate_temp_file_name())
+
+    return ""
+
 def process_request(sqs_message):
     global config
     # extract/parse input JSON
@@ -48,7 +68,7 @@ def process_request(sqs_message):
     server_request_message = ServerRequestMessage(msg_body)
 
     # pull input file via S3
-    input_bucket_handler = S3Handler(config.get_input_bucket_name())
+
     output_bucket_handler = S3Handler(config.get_output_bucket_name())
 
     write_to_log("Received message from client:")
@@ -62,6 +82,10 @@ def process_request(sqs_message):
     sqs_response_msg = SQSMessage()
     sqs_response_msg.set_id(client_id)
     response_msg = ServerResponseMessage()
+
+    input_put_file_url = request_msg.get_input_file_url()
+    input_file_content = fetch_input_file(request_msg)
+
     response_msg.set_output_file_url(output_file_url)
     #############################################
     sqs_response_msg.set_message_body(response_msg.as_json_str())
@@ -69,9 +93,7 @@ def process_request(sqs_message):
     # output_bucket_handler.upload_file('output-cid.json', 'output-cid_timestamp.json')
 
     sqs_response_handler = SQSHandler(config.get_response_queue_name())
-
-
-
+    
     # send message to response queue using client_id as  msg-id
     sqs_response_handler.send_message(sqs_response_msg)
 

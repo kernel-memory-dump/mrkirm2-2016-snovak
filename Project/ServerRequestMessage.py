@@ -29,7 +29,8 @@ import json
 class ServerRequestMessage:
 
     def __init__(self, json_data=None):
-        self.__input_file_url = None
+        self.__input_bucket_name = None
+        self.__input_bucket_key = None
         if json_data is not None:
             self.__parse_json_data(json_data)
 
@@ -37,11 +38,19 @@ class ServerRequestMessage:
         parsed = json.loads(data)
         self.__input_file_url = parsed["input_file_url"]
 
-    def set_input_file_url(self, url):
-        self.__input_file_url = url
+    def set_input_file_bucket_name(self, bucket_name):
+        self.__input_bucket_name = bucket_name
 
-    def get_input_file_url(self):
-        return self.__input_file_url
+    def get_input_file_bucket_name(self):
+        return self.__input_bucket_name
+
+    def set_input_file_bucket_key(self, bucket_name):
+        self.__input_bucket_name = bucket_name
+
+    def get_input_file_bucket_key(self):
+        return self.__input_bucket_name
+
+
 
     def as_json_str(self):
         return json.dumps({"input_file_url":self.__input_file_url})

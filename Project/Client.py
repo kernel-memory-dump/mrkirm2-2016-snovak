@@ -65,10 +65,14 @@ def main():
     # generate client id
     client_id = generate_client_id()
 
-    file_url =  client_id + "__" + input_file
+    file_key =  client_id + "__" + input_file
 
     # place input file inside input bucket
-    s3_input_handle = S3Handler(config.get_input_bucket_name())
+    #s3_input_handle = S3Handler(config.get_input_bucket_name())
+    EXISTING_BUCKET_NAME = "snovak.public.input.bucket.2016.1234567890"
+    s3_input_handle =  S3Handler(EXISTING_BUCKET_NAME)
+    s3_input_handle.create_new_public_bucket()
+
     # place file under key client-id+__nput_file_name
     s3_input_handle.upload_file(input_file, file_url)
 
@@ -78,7 +82,10 @@ def main():
     sqs_request_msg.set_id(client_id)
     ################################################
     request_msg = ServerRequestMessage()
-    request_msg.set_input_file_url(file_url)
+
+    request_msg.set_input_file_bucket_name(EXISTING_BUCKET_NAME)
+    request_msg.set_input_file_bucket_key(file_key)
+
     sqs_request_msg.set_message_body(request_msg.as_json_str())
     ###############################################
 
