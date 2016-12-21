@@ -30,8 +30,21 @@ import sys
 from S3Handler import S3Handler
 from SQSHandler import SQSHandler
 from SQSHandler import SQSMessage
+from ServerRequestMessage import ServerRequestMessage
+from ServerResponseMessage import ServerResponseMessage
 
+from Config import *
 from Config import Config
+
+def write_to_log(line):
+    log_file = open("log.txt", "a")
+    from datetime import datetime
+    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_file.write(time_part + ":" + line)
+    log_file.close()
+
+CONFIG_JSON_BUCKET = "snovak.project.bucket"
+CONFIG_JSON_KEY = "config.json"
 
 def generate_client_id():
     """ Generates a client id with prefix snovak.client.'
@@ -56,13 +69,13 @@ def main():
     # Parse input arguments
 
     input_file = "test-file.txt"
+
     # load config
-    config = Config("config.json")
+    config = acquire_config()
     config.print_config()
 
     # generate client id
     client_id = generate_client_id()
-
 
     # place input file inside input bucket
     s3_input_handle = S3Handler(config.get_input_bucket_name())
@@ -71,14 +84,19 @@ def main():
 
     # send command to request queue
     sqs_request_handle = SQSHandler(config.get_request_queue_name())
-    request_msg = SQSMessage()
-    request_msg.set_id(client_id)
-
+    sqs_request_msg = SQSMessage()
+    sqs_request_msg.set_id(client_id)
+    ################################################
+    request_msg = ServerRequestMessage()
+    request_msg.set_input_file_url()
+    sqs_request_msg.set_message_body(request_msg.as_json_str())
+    ###############################################
 
     # send request to server to process uploaded file
     sqs_request_handle.send_message(request_msg)
 
     sqs_response_handle = SQSHandler(config.get_response_queue_name())
+
 
     # wait until response queue contains message with id set to client-id
     while True:
@@ -87,6 +105,7 @@ def main():
         for sqs_message in sqs_messages:
             if sqs_messages.get_id() is not None and sqs_message.get_id() is client_id:
                 print("Received response from server!")
+                write_to_log("Received response from server!")
                 break
 
 

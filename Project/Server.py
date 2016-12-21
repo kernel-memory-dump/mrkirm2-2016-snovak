@@ -30,10 +30,22 @@ from SQSHandler import SQSHandler
 from SQSHandler import SQSMessage
 from S3Handler import S3Handler
 from Config import Config
+from Config import *
 from ServerRequestMessage import ServerRequestMessage
+from ServerResponseMessage import ServerResponseMessage
 import json
 
+
+
+CONFIG_FILE_URL = "https://s3-us-west-2.amazonaws.com/snovak.project.bucket/config.json"
 config = None
+
+def write_to_log(line):
+    log_file = open("log.txt", "a")
+    from datetime import datetime
+    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_file.write(time_part + ":" + line)
+    log_file.close()
 
 def process_request(self, sqs_message):
     global config
@@ -46,20 +58,35 @@ def process_request(self, sqs_message):
     input_bucket_handler = S3Handler(config.get_input_bucket_name())
     output_bucket_handler = S3Handler(config.get_output_bucket_name())
 
+    write_to_log("Received message from client:")
     # process file
+    request_msg = ServerRequestMessage(msg_body)
+
 
     # create response output
-
+    sqs_response_msg = SQSMessage()
+    sqs_response_msg.set_id(client_id)
+    response_msg = ServerResponseMessage()
+    response_msg.set_output_file_url("lel")
+    #############################################
+    sqs_response_msg.set_message_body(response_msg.as_json_str())
     # upload response to output bucket under client_id_output_file_timestamp key
+    # output_bucket_handler.upload_file('output-cid.json', 'output-cid_timestamp.json')
+
+    sqs_response_handler = SQSHandler(config.get_response_queue_name())
+
+
 
     # send message to response queue using client_id as  msg-id
+    sqs_response_handler.send_message(sqs_response_msg)
+
+    
 
 
 def main():
 
     # load config
-    config = Config("config.json")
-    config.print_config()
+    config = acquire_config()
 
     sqs_request_handle = SQSHandler(config.get_request_queue_name(), 5)
 

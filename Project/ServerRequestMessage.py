@@ -28,18 +28,23 @@ import json
 
 class ServerRequestMessage:
 
-    def __init__(self, data=None):
-        if data is not None:
-            self.__parse_json_data(data)
+    def __init__(self, json_data=None):
+        self.__input_file_url = None
+        if json_data is not None:
+            self.__parse_json_data(json_data)
+
+    def __parse_json_data(self):
+        parsed = json.load(data)
+        self.__input_file_url = parsed["input_file_url"]
+
+    def set_input_file_url(self, url):
+        self.__input_file_url = url
 
     def get_input_file_url(self):
-        pass
-
-    def __parse_json_data(self, data):
-        parsed = json.load(data)
+        return self.__input_file_url
 
     def as_json_str(self):
-        pass
+        return json.dumps({"input_file_url":self.__input_file_url})
 
     def as_str(self):
-        pass
+        return "input_file:" + str(self.__input_file_url)

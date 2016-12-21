@@ -28,6 +28,14 @@ from EC2Handler import EC2Handler
 
 INIT_SCRIPT = "ec2_init_template.sh"
 
+
+def write_to_log(line):
+    log_file = open("log.txt", "a")
+    from datetime import datetime
+    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_file.write(time_part + ":" + line)
+    log_file.close()
+
 def main():
     print("Firing up EC2 server instance...")
     handler = EC2Handler()

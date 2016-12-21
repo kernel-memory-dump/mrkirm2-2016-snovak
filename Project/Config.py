@@ -26,6 +26,15 @@
 
 import json
 from pprint import pprint
+from S3Handler import S3Handler
+
+
+def acquire_config():
+    config_bucket_handler = S3Handler(CONFIG_JSON_BUCKET)
+    config_bucket_handler.download_file(CONFIG_JSON_KEY, "config.json")
+    config = Config("config.json")
+    return config
+
 
 class Config:
     def __init__(self, json_path):
@@ -42,6 +51,12 @@ class Config:
         print("Output bucket name:" + self.get_output_bucket_name())
         print("Request queue name:" + self.get_request_queue_name())
         print("Response queue  name:" + self.get_response_queue_name())
+
+    def get_status(self):
+        return self.__data["status"]
+
+    def set_status(self, value):
+        self.__data["status"] = value
 
     def get_input_bucket_name(self):
         return self.__data["input_bucket_name"]
