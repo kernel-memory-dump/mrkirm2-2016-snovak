@@ -59,8 +59,6 @@ def fetch_wrapped_instances():
 class EC2HandlerError(Exception):
     pass
 
-#
-
 class EC2Handler:
     """Wraps EC2 instance resource, maintains persistent ec2 instance state through field-access interceptor"""
 

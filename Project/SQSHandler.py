@@ -184,7 +184,7 @@ class SQSHandler:
             self.msg_attributes = msg_attributes
 
     def receive_messages(self, count=10):
-        messages = self.__queue.receive_messages(MaxNumberOfMessages=count, WaitTimeSeconds=10, MessageAttributeNames=self.msg_attributes)
+        messages = self.__queue.receive_messages(MaxNumberOfMessages=count, WaitTimeSeconds=10, MessageAttributeNames=self.msg_attributes, VisibilityTimeout=1)
         if messages is None or len(messages) is 0:
             return
 
@@ -205,7 +205,7 @@ class SQSHandler:
                 print("found duplicate msg, skipping it")
                 continue
             # mark as processed
-            sqs_message.delete()
+            #sqs_message.delete()
             print("Processing received msg:" + str(sqs_message.get_id()))
 
             self.inbox.put_msg(sqs_message)

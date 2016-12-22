@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 #############################################################################
 #
 #
@@ -34,10 +32,12 @@ from SQSHandler import SQSHandler
 from SQSHandler import SQSMessage
 from ServerRequestMessage import ServerRequestMessage
 from ServerResponseMessage import ServerResponseMessage
+from ServerResponseMessage import ResponseEntity
 
 from Config import *
 from Config import Config
 from log import * 
+
 
 def generate_client_id():
     """ Generates a client id with prefix snovak.client.'
@@ -65,7 +65,7 @@ def main():
     # generate client id
     client_id = generate_client_id()
 
-    file_key =  client_id + "__" + input_file
+    file_key = client_id + "__" + input_file
 
     # place input file inside input bucket
     #s3_input_handle = S3Handler(config.get_input_bucket_name())
@@ -73,8 +73,8 @@ def main():
     s3_input_handle =  S3Handler(EXISTING_BUCKET_NAME)
     s3_input_handle.create_new_public_bucket()
 
-    # place file under key client-id+__nput_file_name
-    s3_input_handle.upload_file(input_file, file_url)
+    # place file under key client-id+__nput_file_name , set it to public 
+    s3_input_handle.upload_file(input_file, file_key, public=True)
 
     # send command to request queue
     sqs_request_handle = SQSHandler(config.get_request_queue_name())
@@ -85,6 +85,7 @@ def main():
 
     request_msg.set_input_file_bucket_name(EXISTING_BUCKET_NAME)
     request_msg.set_input_file_bucket_key(file_key)
+    request_msg.set_keyword("x")
 
     sqs_request_msg.set_message_body(request_msg.as_json_str())
     ###############################################
@@ -96,8 +97,10 @@ def main():
 
     s3_output_handle = S3Handler(config.get_output_bucket_name())
 
+    response_received = False
+
     # wait until response queue contains message with id set to client-id
-    while True:
+    while not response_received:
         sqs_response_handle.receive_messages()
         sqs_messages = sqs_response_handle.get_inbox().get_messages()
         sqs_response_handle.get_inbox().clear()
@@ -109,9 +112,25 @@ def main():
                 sqs_message.delete()
                 # parse into object 
                 response_msg = ServerResponseMessage(sqs_message.get_message_body())
-                s3_output_handle.download_file(response_msg.get_output_file_url(), "from_server_" + response_msg.get_output_file_url())
+
                 write_to_log("Received response from server!")
-                break
+                response_received = True
+                if not response_msg.is_successful():
+                    print("Server failed to process input_file, received error message")
+                    return
+
+                print("Fetching server output from S3")
+                output_tmp_file = "from_server_" + response_msg.get_output_file_url()
+                s3_output_handle.download_file(response_msg.get_output_file_url(), output_tmp_file)
+                # parse server output file into object
+                output_tmp = open(output_tmp_file, 'r')
+                response_entity = ResponseEntity(output_tmp.read())
+                output_tmp.close()
+                os.remove(output_tmp_file)
+
+                print("Number of specified keyword occurrences:" + response_entity.get_keyword_count())
+
+
 
 
 

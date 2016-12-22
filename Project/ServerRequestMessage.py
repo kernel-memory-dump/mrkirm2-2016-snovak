@@ -26,17 +26,27 @@
 
 import json
 
+
 class ServerRequestMessage:
 
     def __init__(self, json_data=None):
         self.__input_bucket_name = None
         self.__input_bucket_key = None
+        self.__keyword = None
         if json_data is not None:
             self.__parse_json_data(json_data)
 
     def __parse_json_data(self, data):
         parsed = json.loads(data)
-        self.__input_file_url = parsed["input_file_url"]
+        self.__input_bucket_name = parsed["input_bucket_name"]
+        self.__input_bucket_key = parsed["input_bucket_key"]
+        self.__keyword = parsed["keyword"]
+
+    def set_keyword(self, value):
+        self.__keyword = value
+
+    def get_keyword(self):
+        return self.__keyword
 
     def set_input_file_bucket_name(self, bucket_name):
         self.__input_bucket_name = bucket_name
@@ -44,16 +54,14 @@ class ServerRequestMessage:
     def get_input_file_bucket_name(self):
         return self.__input_bucket_name
 
-    def set_input_file_bucket_key(self, bucket_name):
-        self.__input_bucket_name = bucket_name
+    def set_input_file_bucket_key(self, key):
+        self.__input_bucket_key = key
 
     def get_input_file_bucket_key(self):
-        return self.__input_bucket_name
-
-
+        return self.__input_bucket_key
 
     def as_json_str(self):
-        return json.dumps({"input_file_url":self.__input_file_url})
+        return json.dumps({"input_bucket_name":self.__input_bucket_name, "input_bucket_key": self.__input_bucket_key, "keyword": self.__keyword})
 
     def as_str(self):
-        return "input_file:" + str(self.__input_file_url)
+        return "REQUEST_MSG::" + str(self.as_json_str())

@@ -27,6 +27,7 @@
 import json
 from pprint import pprint
 from S3Handler import S3Handler
+import os
 
 
 CONFIG_JSON_BUCKET = "snovak.project.bucket"
@@ -34,7 +35,7 @@ CONFIG_JSON_KEY = "config.json"
 
 def acquire_config():
     config_bucket_handler = S3Handler(CONFIG_JSON_BUCKET)
-    config_bucket_handler.download_file(CONFIG_JSON_KEY, "config.json")
+    config_bucket_handler.download_file(CONFIG_JSON_KEY, CONFIG_JSON_KEY)
     config = Config("config.json")
     return config
 
@@ -54,6 +55,8 @@ class Config:
         print("Output bucket name:" + self.get_output_bucket_name())
         print("Request queue name:" + self.get_request_queue_name())
         print("Response queue  name:" + self.get_response_queue_name())
+        print("Status:" + self.get_status())
+        print("Server instance ID:" + self.get_server_id())
 
     def get_status(self):
         return self.__data["status"]
@@ -72,3 +75,25 @@ class Config:
 
     def get_response_queue_name(self):
         return self.__data["response_queue_name"]
+
+    def get_server_id(self):
+        return self.__data["server_id"]
+
+    def set_server_id(self, value):
+        """ EC2 instance id required for performing clean-up"""
+        self.__data["server_id"] = value
+
+    def update(self):
+        """ Updates config.json on S3 using current Config object state"""
+        config_file = open(CONFIG_JSON_KEY, 'w')
+        config_file.write(self.as_json_str())
+        config_file.close()
+
+
+        config_bucket_handler = S3Handler(CONFIG_JSON_BUCKET)
+        config_bucket_handler.upload_file(CONFIG_JSON_KEY, CONFIG_JSON_KEY, public=True)
+        #os.remove(CONFIG_JSON_KEY)
+
+
+    def as_json_str(self):
+        return json.dumps(self.__data, indent=4, sort_keys=True)

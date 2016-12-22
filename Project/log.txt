@@ -1,0 +1,39 @@
+2016-12-21 22:00:09:Received message from client:
+2016-12-21 22:07:05:Received message from client:{"keyword": null, "input_bucket_name": "snovak.client.1482354423.4387712__test-file.txt", "input_bucket_key": null}
+2016-12-21 22:08:43:Received message from client:{"input_bucket_name": "snovak.client.1482354520.5931244__test-file.txt", "keyword": null, "input_bucket_key": null}
+2016-12-21 22:10:26:Received message from client:{"input_bucket_name": "snovak.client.1482354520.5931244__test-file.txt", "keyword": null, "input_bucket_key": null}
+2016-12-21 22:12:08:Received message from client:{"input_bucket_name": "snovak.client.1482354520.5931244__test-file.txt", "keyword": null, "input_bucket_key": null}
+2016-12-21 22:27:47:Received message from client:{"input_bucket_key": "snovak.client.1482355059.9372475__test-file.txt", "keyword": "the", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:28:32:Received message from client:{"input_bucket_key": "snovak.client.1482355059.9372475__test-file.txt", "keyword": "the", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:32:25:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:32:55:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:38:43:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:42:43:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:43:13:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:50:17:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:51:17:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:51:53:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482355937.7394884__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 22:51:57:Received response from server!
+2016-12-21 23:04:32:Received message from client:{"input_bucket_name": "snovak.public.input.bucket.2016.1234567890", "input_bucket_key": "snovak.client.1482357870.1124747__test-file.txt", "keyword": "the"}
+2016-12-21 23:04:35:Received response from server!
+2016-12-21 23:10:09:Received message from client:{"keyword": "the", "input_bucket_key": "snovak.client.1482358207.7573009__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890"}
+2016-12-21 23:10:12:Received response from server!
+2016-12-21 23:10:35:Received message from client:{"input_bucket_key": "snovak.client.1482358233.2040627__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890", "keyword": "the"}
+2016-12-21 23:10:38:Received response from server!
+2016-12-21 23:12:05:Received message from client:{"input_bucket_name": "snovak.public.input.bucket.2016.1234567890", "input_bucket_key": "snovak.client.1482358323.522938__test-file.txt", "keyword": "x"}
+2016-12-21 23:12:08:Received response from server!
+2016-12-21 23:14:09:Received message from client:{"input_bucket_key": "snovak.client.1482358447.3315442__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890", "keyword": "x"}
+2016-12-21 23:14:12:Received response from server!
+2016-12-22 00:00:48:Received message from client:{"input_bucket_key": "snovak.client.1482361246.2332256__test-file.txt", "input_bucket_name": "snovak.public.input.bucket.2016.1234567890", "keyword": "x"}
+2016-12-22 00:00:50:Received response from server!
+2016-12-22 00:35:53:Initializing request/response queues
+2016-12-22 00:35:54:Initializing EC2 server...
+2016-12-22 00:41:28:Initializing request/response queues
+2016-12-22 00:45:02:Deleting request/response queues
+2016-12-22 00:45:04:Terminating EC2 server...
+2016-12-22 00:51:24:Deleting request/response queues
+2016-12-22 00:51:26:Terminating EC2 server...
+2016-12-22 00:59:32:Initializing request/response queues
+2016-12-22 00:59:34:Initializing EC2 server...
+2016-12-22 01:00:56:Deleting request/response queues
+2016-12-22 01:00:58:Terminating EC2 server...

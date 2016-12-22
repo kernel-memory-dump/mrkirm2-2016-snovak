@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 #############################################################################
 #
 #
@@ -29,37 +27,44 @@
 from EC2Handler import EC2Handler
 from Config import Config
 from Config import *
+from SQSHandler import SQSHandler
+from S3Handler import S3Handler
+from log import *
 
 INIT_SCRIPT = "ec2_init_template.sh"
 
 
-def write_to_log(line):
-    log_file = open("log.txt", "a")
-    from datetime import datetime
-    time_part = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    log_file.write(time_part + ":" + line)
-    log_file.close()
-
 def main():
 
-    print("Firing up EC2 server instance...")
     handler = EC2Handler()
     config = acquire_config()
 
     print("Creating input/output buckets")
-    '''
+
     s3_input_handle = S3Handler(config.get_input_bucket_name())
-    s3_input_handle.create_new_bucket()
+    s3_input_handle.create_new_public_bucket()
     s3_output_handle = S3Handler(config.get_output_bucket_name())
-    s3_output_handle.create_new_bucket()
-    '''
+    s3_output_handle.create_new_public_bucket()
+
+    print("Initializing request/response queues")
+    write_to_log("Initializing request/response queues")
+    sqs_request = SQSHandler(config.get_request_queue_name())
+    sqs_response = SQSHandler(config.get_response_queue_name())
+
+    print("Firing up EC2 server instance...")
 
 
+    write_to_log("Initializing EC2 server...")
     handler.create_instance(INIT_SCRIPT)
+
     if handler.ec2_instance is None:
         print("Fatal error: failed to create EC2 instance!")
         return
 
+    print("Initizalization completed! Server id is:" + handler.instance_id)
+    print("Updating config.json, sending acquired server-id")
+    config.set_server_id(handler.instance_id)
+    config.update()
 
 
 if __name__ == '__main__':
